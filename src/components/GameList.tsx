@@ -1,18 +1,98 @@
-
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import IGame from "../types/IGame"
+import data from '../assets/games.json'
+import api from "../api/api"
+import GameCard from "./GameCard"
+import {isAxiosError } from "axios"
+import useDebounce from "../hooks/useDebounce"
+import {MagnifyingGlass} from '@phosphor-icons/react'
+
+
 export default function GameList() {
     const [games, setGames] = useState<IGame[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [filteredGames, setFilteredGames] = useState<IGame[]>([])
+    const [error, setError] = useState({ status: false, errorMessage: "" })
+    const debouncedHandleFilter = useDebounce(handleFilter,500)
     useEffect(() => {
-        setIsLoading(true)
-        console.log(games)
-        setIsLoading(false)
+        ;(async () => {
+            try {
+                // setIsLoading(true)
+
+                // const res = await api.get<IGame[]>("/data")
+                // if (res.status == 200) {
+                //     console.log(res.status)
+                //     setGames(res.data)
+                //     setIsLoading(false)
+                // }
+                setGames(data)
+                setFilteredGames(data)
+
+            } catch (e) {
+                setIsLoading(false)
+                console.log(e)
+                if (isAxiosError(e)) {
+                    if (e.code == "ECONNABORTED" || e.code == "") {
+                        setError({
+                            status: true,
+                            errorMessage:
+                                "O servidor demorou para responder, tente mais tarde.",
+                        })
+                    } else if (
+                        (e.response?.status as number) >= 500 &&
+                        (e.response?.status as number) < 600
+                    ) {
+                        setError({
+                            status: true,
+                            errorMessage:
+                                "O servidor falhou em responder, tente recarregar a página.",
+                        })
+                    } else {
+                        setError({
+                            status: true,
+                            errorMessage:
+                                "O servidor não conseguirá responder por agora, tente voltar novamente mais tarde.",
+                        })
+                    }
+                } else {
+                    setError({
+                        status: true,
+                        errorMessage:
+                            "Ops houve algum erro, tente voltar novamente mais tarde.",
+                    })
+                }
+            }
+        })()
     }, [])
-    return isLoading ? 
-    (<h1>Loading...</h1>) : (
-        <main>
-            {games.map(game=><p>{game?.title}</p>)}
-        </main>
-    )
+
+    function handleFilter(event: React.ChangeEvent<HTMLInputElement>) {
+        let titleToSearch = event.target.value.toLowerCase()
+        if(titleToSearch == ''){
+            setFilteredGames(games)
+        }else{
+            let newGameList = games.filter((game) =>
+            game.title.toLowerCase().includes(titleToSearch)
+        )
+        setFilteredGames(newGameList)
+        }
+        
+    }
+
+    if(isLoading){
+        return <h1>Loading...</h1>
+    }else{
+        return (
+            error.status ? <span>{error.errorMessage}</span>:
+            <><div className="col-span-12 rounded-full  my-1 flex gap-3 px-4 py-2 -mt-30 bg-white shadow-sm shadow-violet-200 border-violet-200 border-solid border-2">
+
+                <MagnifyingGlass className="fill-violet-400" size={32} />
+                <input type="text" className="w-full border-l-2 border-violet-400 pl-2 text-zinc-800 text-xl outline-none" onChange={debouncedHandleFilter}></input>
+            </div>
+                {filteredGames.map((game) => (
+                    <GameCard game={game} key={game.id} />
+                ))}
+            </>
+        )
+    }
+    
 }
