@@ -8,10 +8,7 @@ export default function GameCard({ game }: { game: IGame }) {
             <p>{game.genre}</p>
             <p>{game.platform}</p>
             <p className="flex-1">{game.short_description}</p>
-            <button className=" bg-violet-600 w-full shadow-md shadow-violet-300 text-lg px-2 text-white py-2 rounded-lg
-">
-                Saiba mais
-            </button></div>
+            </div>
             
         </div>
     )
