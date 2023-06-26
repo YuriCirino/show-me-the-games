@@ -1,6 +1,6 @@
-import { useEffect, useState,useRef } from "react"
+import { useEffect, useState} from "react"
 import IGame from "../types/IGame"
-import data from '../assets/games.json'
+// import data from '../assets/games.json'
 import api from "../api/api"
 import GameCard from "./GameCard"
 import {isAxiosError } from "axios"
@@ -24,18 +24,10 @@ export default function GameList() {
 
                 const res = await api.get<IGame[]>("/data")
                 if (res.status == 200) {
-                    console.log(res.status)
-                    console.log(res)
                     setGames(res.data)
                     setFilteredGames(res.data)
                     setIsLoading(false)
                 }
-                // setIsLoading(true)
-                // setTimeout(()=>{},1000)
-                // setGames(data)
-                // setFilteredGames(data)
-                // setIsLoading(false)
-
             } catch (e) {
                 setIsLoading(false)
                 console.log(e)
