@@ -83,10 +83,12 @@ export default function GameList() {
     }else{
         return (
             error.status ? <ErrorMessage message={error.errorMessage}/>:
-            <><div className="col-span-12 rounded-full  my-1 flex gap-3 px-4 py-2 -mt-30 bg-white shadow-sm shadow-violet-200 border-violet-200 border-solid border-2">
+            <><div className="col-span-12 rounded-full  my-1 flex items-center gap-3 px-4 py-2 -mt-30 bg-white shadow-sm shadow-violet-200 border-violet-200 border-solid border-2">
 
                 <MagnifyingGlass className="fill-violet-400" size={32} />
-                <input type="text" className="w-full border-l-2 rounded-none border-violet-400 pl-2 text-zinc-800 text-xl outline-none" onChange={debouncedHandleFilter}></input>
+                <div className="h-full border-solid border-violet-400 border-l-2">
+                </div>
+                <input type="text" className="w-full rounded-none pl-2 text-zinc-800 text-xl outline-none" onChange={debouncedHandleFilter}></input>
             </div>
                 {filteredGames.map((game) => (
                     <GameCard game={game} key={game.id} />
