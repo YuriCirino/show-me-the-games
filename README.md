@@ -5,7 +5,8 @@
 - ViteJs
 - Tailwindcss
 - Axios
-### Requisitos
+- TypeScript
+### Requisitos:
 -   [x] O projeto deve ser feito usando React ou Next.JS
 -   [x] Obter a lista de jogos em `/data`
 -   [x] Apresentar um loader enquanto os dados são obtidos
@@ -18,4 +19,4 @@
 -   [x] Sempre que apresentar uma mensagem para o usuário, ou tiver os dados em mãos para apresentar, ocultar o loader
 -   [x] Incluir um campo de busca, que permite localizar jogos pelo título, com busca case insensitive
 -   [ ] Uma vez que tenha os dados em mãos, veja quais `genre` foram retornados e permita ao usuário selecionar um deles, e então filtre para exibir apenas jogos do gênero selecionado
-#### [Link do Projeto](https://show-me-the-games-ombfsaju6-yuricirino.vercel.app/)
+#### [Link do Projeto](https://show-me-the-games.vercel.app/)
