@@ -6,27 +6,35 @@ import GameCard from "./GameCard"
 import {isAxiosError } from "axios"
 import useDebounce from "../hooks/useDebounce"
 import {MagnifyingGlass} from '@phosphor-icons/react'
+import Spinner from "./Spinner"
+import ErrorMessage from "./ErrorMessage"
 
 
 export default function GameList() {
     const [games, setGames] = useState<IGame[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [filteredGames, setFilteredGames] = useState<IGame[]>([])
-    const [error, setError] = useState({ status: false, errorMessage: "" })
+    const [error, setError] = useState({ status: false, 
+        errorMessage: "O servidor não conseguirá responder por agora, tente voltar novamente mais tarde." })
     const debouncedHandleFilter = useDebounce(handleFilter,500)
     useEffect(() => {
         ;(async () => {
             try {
-                // setIsLoading(true)
+                setIsLoading(true)
 
-                // const res = await api.get<IGame[]>("/data")
-                // if (res.status == 200) {
-                //     console.log(res.status)
-                //     setGames(res.data)
-                //     setIsLoading(false)
-                // }
-                setGames(data)
-                setFilteredGames(data)
+                const res = await api.get<IGame[]>("/data")
+                if (res.status == 200) {
+                    console.log(res.status)
+                    console.log(res)
+                    setGames(res.data)
+                    setFilteredGames(res.data)
+                    setIsLoading(false)
+                }
+                // setIsLoading(true)
+                // setTimeout(()=>{},1000)
+                // setGames(data)
+                // setFilteredGames(data)
+                // setIsLoading(false)
 
             } catch (e) {
                 setIsLoading(false)
@@ -79,10 +87,10 @@ export default function GameList() {
     }
 
     if(isLoading){
-        return <h1>Loading...</h1>
+        return <Spinner/>
     }else{
         return (
-            error.status ? <span>{error.errorMessage}</span>:
+            error.status ? <ErrorMessage message={error.errorMessage}/>:
             <><div className="col-span-12 rounded-full  my-1 flex gap-3 px-4 py-2 -mt-30 bg-white shadow-sm shadow-violet-200 border-violet-200 border-solid border-2">
 
                 <MagnifyingGlass className="fill-violet-400" size={32} />
